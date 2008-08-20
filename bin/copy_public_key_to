@@ -1,0 +1,5 @@
+#!/bin/sh
+for ARG in $*
+do
+  cat ~/.ssh/id_dsa.pub | ssh $ARG "mkdir -p .ssh; touch .ssh/authorized_keys; cat - >> .ssh/authorized_keys"
+done

@@ -1,0 +1,7 @@
+#!/usr/bin/env ruby
+arr = []
+while line = STDIN.gets
+  arr << line.to_f
+end
+arr.sort!
+puts arr[arr.length / 2]
