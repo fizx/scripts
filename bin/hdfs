@@ -1,0 +1,24 @@
+#!/usr/bin/env ruby
+#
+# A simple shell for the hadoop filesystem
+#
+require "readline"
+
+if ARGV.first =~ /-h/
+  puts "Usage: #{$0} [HADOOP_CONFS ...]"
+  exit
+end
+
+confs = ARGV.map{|arg| "-conf #{arg}"}.join(" ")
+
+loop do
+  line = Readline::readline('> ').strip
+  Readline::HISTORY.push(line)
+  case line
+  when "":
+  when "exit", "bye": exit
+  when "help", "?": system "hadoop fs"
+  else
+    system "hadoop fs #{confs} -#{line}"
+  end
+end
