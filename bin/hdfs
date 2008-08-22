@@ -3,6 +3,7 @@
 # A simple shell for the hadoop filesystem
 #
 require "readline"
+HDFS_HISTORY = File.join(ENV["HOME"], ".hdfs_history")
 
 if ARGV.first =~ /-h/
   puts "Usage: #{$0} [HADOOP_CONFS ...]"
@@ -11,12 +12,30 @@ end
 
 confs = ARGV.map{|arg| "-conf #{arg}"}.join(" ")
 
+def save_history
+  File.open(HDFS_HISTORY, "w") do |file|
+    Readline::HISTORY.map{|a| a }.last(500).each do |line|
+      file.puts line
+    end
+  end
+end
+
+def load_history
+  return unless File.exists?(HDFS_HISTORY)
+  File.open(HDFS_HISTORY).each do |line|
+    Readline::HISTORY.push(line.strip)
+  end
+end
+
+load_history
 loop do
   line = Readline::readline('> ').strip
   Readline::HISTORY.push(line)
   case line
   when "":
-  when "exit", "bye": exit
+  when "exit", "bye": 
+    save_history
+    exit
   when "help", "?": system "hadoop fs"
   else
     system "hadoop fs #{confs} -#{line}"
