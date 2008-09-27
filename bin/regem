@@ -1,0 +1,8 @@
+#!/usr/bin/env ruby
+
+Dir["*.gemspec"].each do |spec|
+  name = spec.sub(".gemspec", "")
+  system "gem build #{spec}"
+  system "sudo gem uninstall #{name}"
+  system "sudo gem install #{name}"
+end
